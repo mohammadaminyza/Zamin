@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
 {
-    public partial class init : Migration
+    public partial class MigInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

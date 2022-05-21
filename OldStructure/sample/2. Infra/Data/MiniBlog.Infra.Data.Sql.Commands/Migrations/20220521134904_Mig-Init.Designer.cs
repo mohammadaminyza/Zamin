@@ -12,14 +12,14 @@ using MiniBlog.Infra.Data.Sql.Commands.Common;
 namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
 {
     [DbContext(typeof(MiniblogCommandDbContext))]
-    [Migration("20211226104716_init")]
-    partial class init
+    [Migration("20220521134904_Mig-Init")]
+    partial class MigInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);

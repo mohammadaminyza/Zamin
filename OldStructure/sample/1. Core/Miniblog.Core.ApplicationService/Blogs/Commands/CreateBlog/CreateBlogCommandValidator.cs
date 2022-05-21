@@ -10,14 +10,10 @@ namespace Miniblog.Core.ApplicationService.Blogs.Commands.CreateBlog
         public CreateBlogCommandValidator(ITranslator translator)
         {
             RuleFor(c => c.Title)
-                .NotNull().WithMessage(translator["Required", nameof(Title)])
-                .MinimumLength(10).WithMessage(translator["MinimumLength", nameof(Title), "10"])
-                .MaximumLength(100).WithMessage(translator["MaximumLength", nameof(Title), "100"]);
+                .NotNull().WithMessage(translator["Required", nameof(Title)]);
 
             RuleFor(c => c.Description)
-                .NotNull().WithMessage(translator["Required", nameof(Description)]).WithErrorCode("1")
-                .MinimumLength(50).WithMessage(translator["MinimumLength", nameof(Description), "50"]).WithErrorCode("2")
-                .MaximumLength(500).WithMessage(translator["MaximumLength", nameof(Description), "500"]).WithErrorCode("3");
+                .NotNull().WithMessage(translator["Required", nameof(Description)]).WithErrorCode("1");
         }
     }
 }

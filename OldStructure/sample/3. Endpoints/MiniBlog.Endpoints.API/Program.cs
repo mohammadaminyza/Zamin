@@ -10,8 +10,15 @@ var builder = new ZaminProgram().Main(args, "appsettings.json", "appsettings.zam
 //Configuration
 ConfigurationManager Configuration = builder.Configuration;
 builder.Services.AddZaminApiServices(Configuration);
-builder.Services.AddDbContext<MiniblogCommandDbContext>(c => c.UseSqlServer(Configuration.GetConnectionString("MiniBlogCommand_ConnectionString")));
-builder.Services.AddDbContext<MiniblogQueryDbContext>(c => c.UseSqlServer(Configuration.GetConnectionString("MiniBlogQuery_ConnectionString")));
+
+builder.Services.AddDbContext<MiniblogCommandDbContext>(c =>
+{
+    c.UseSqlServer(Configuration.GetConnectionString("MiniBlogCommand_ConnectionString"));
+});
+builder.Services.AddDbContext<MiniblogQueryDbContext>(c =>
+{
+    c.UseSqlServer(Configuration.GetConnectionString("MiniBlogQuery_ConnectionString"));
+});
 
 //Middlewares
 var app = builder.Build();

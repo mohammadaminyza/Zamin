@@ -15,13 +15,12 @@ using Zamin.Infra.Data.Sql.Extensions;
 namespace Zamin.Infra.Data.Sql.Commands;
 public abstract class BaseCommandDbContext : DbContext
 {
-    private IDbContextTransaction _transaction;
+    private IDbContextTransaction? _transaction;
 
-    public DbSet<OutBoxEventItem> OutBoxEventItems { get; set; }
+    public DbSet<OutBoxEventItem> OutBoxEventItems => Set<OutBoxEventItem>();
 
     public BaseCommandDbContext(DbContextOptions options) : base(options)
     {
-
     }
 
     protected BaseCommandDbContext()

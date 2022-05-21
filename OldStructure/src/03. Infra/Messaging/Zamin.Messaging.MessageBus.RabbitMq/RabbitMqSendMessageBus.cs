@@ -4,6 +4,7 @@ using Zamin.Utilities.Services.Serializers;
 using RabbitMQ.Client;
 using Microsoft.Extensions.ObjectPool;
 using Zamin.Utilities.Extensions;
+using Zamin.Utilities.Services.Users;
 
 namespace Zamin.Messaging.MessageBus.RabbitMq;
 public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjectPolicy<IModel>
@@ -11,11 +12,15 @@ public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjec
     private readonly ZaminConfigurationOptions _configuration;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly IConnection _connection;
-
-    public RabbitMqSendMessageBus(ZaminConfigurationOptions configuration, IJsonSerializer jsonSerializer)
+    private readonly IUserInfoService _userInfoService;
+    public RabbitMqSendMessageBus(ZaminConfigurationOptions configuration,
+        IJsonSerializer jsonSerializer,
+        IUserInfoService userInfoService)
     {
         _configuration = configuration;
         _jsonSerializer = jsonSerializer;
+        _userInfoService = userInfoService;
+
         var connectionFactory = new ConnectionFactory
         {
             Uri = configuration.MessageBus.RabbitMq.Uri
@@ -29,7 +34,7 @@ public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjec
 
     public void Publish<TInput>(TInput input)
     {
-        string messageName = input.GetType().Name;
+        string? messageName = input?.GetType().Name;
         Parcel parcel = new Parcel
         {
             MessageId = Guid.NewGuid().ToString(),
@@ -76,9 +81,10 @@ public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjec
         basicProperties.AppId = _configuration.ServiceId;
         basicProperties.CorrelationId = parcel?.CorrelationId;
         basicProperties.MessageId = parcel?.MessageId;
-        basicProperties.Headers = parcel.Headers;
-        basicProperties.Type = parcel.MessageName;
-        channel.BasicPublish(_configuration.MessageBus.RabbitMq.ExchangeName, parcel.Route, basicProperties, parcel.MessageBody.ToByteArray());
+        basicProperties.UserId = _userInfoService.UserId();
+        basicProperties.Headers = parcel?.Headers;
+        basicProperties.Type = parcel?.MessageName;
+        channel.BasicPublish(_configuration.MessageBus.RabbitMq.ExchangeName, parcel?.Route, basicProperties, parcel?.MessageBody.ToByteArray());
     }
 
     public void Dispose()

@@ -8,7 +8,7 @@ namespace MiniBlog.Endpoints.API.Blogs
     public class BlogsController : BaseController
     {
         [HttpPost]
-        public async Task<IActionResult> Post(CreateBlogCommand createBlog )
+        public async Task<IActionResult> Post([FromBody] CreateBlogCommand createBlog)
         {
             return await Create(createBlog);
         }

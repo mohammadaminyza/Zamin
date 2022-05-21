@@ -7,14 +7,28 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Common
 {
     public class MiniblogCommandDbContext : BaseCommandDbContext
     {
-        public DbSet<Blog> Blogs { get; set; }
         public MiniblogCommandDbContext(DbContextOptions<MiniblogCommandDbContext> options) : base(options)
         {
         }
+
+        public DbSet<Blog> Blogs => Set<Blog>();
+
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Properties<Description>().HaveConversion<DescriptionConversion>();
-            configurationBuilder.Properties<Title>().HaveConversion<TitleConversion>();         
+            configurationBuilder.Properties<Title>().HaveConversion<TitleConversion>();
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         }
     }
 }

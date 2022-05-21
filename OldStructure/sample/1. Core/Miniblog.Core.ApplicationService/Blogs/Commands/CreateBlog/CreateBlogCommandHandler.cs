@@ -20,7 +20,7 @@ namespace Miniblog.Core.ApplicationService.Blogs.Commands.CreateBlog
 
         public override async Task<CommandResult> Handle(CreateBlogCommand request)
         {
-            Blog blog = new(request.BusunessId, request.Title, request.Description);
+            Blog blog = new(Guid.NewGuid(), request.Title, request.Description);
             await _blogCommandRepository.InsertAsync(blog);
             await _blogCommandRepository.CommitAsync();
             return Ok();
