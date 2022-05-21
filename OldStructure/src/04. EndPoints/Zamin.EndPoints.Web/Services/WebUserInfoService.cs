@@ -12,16 +12,16 @@ namespace Zamin.EndPoints.Web.Services
 
         public WebUserInfoService(IHttpContextAccessor httpContextAccessor)
         {
-            if(httpContextAccessor == null || httpContextAccessor.HttpContext == null)
+            if (httpContextAccessor == null || httpContextAccessor.HttpContext == null)
             {
                 throw new ArgumentNullException(nameof(httpContextAccessor));
-            }    
+            }
             _httpContext = httpContextAccessor.HttpContext;
         }
 
         public string GetUserAgent() => _httpContext.Request.Headers["User-Agent"];
         public string GetUserIp() => _httpContext.Connection.RemoteIpAddress.ToString();
-        public int UserId() => int.Parse(_httpContext.User?.GetClaim(ClaimTypes.NameIdentifier));
+        public string UserId() => _httpContext.User?.GetClaim(ClaimTypes.NameIdentifier);
         public string GetUsername() => _httpContext.User?.GetClaim(ClaimTypes.Name);
         public string GetFirstName() => _httpContext.User?.GetClaim(ClaimTypes.GivenName);
         public string GetLastName() => _httpContext.User?.GetClaim(ClaimTypes.Surname);

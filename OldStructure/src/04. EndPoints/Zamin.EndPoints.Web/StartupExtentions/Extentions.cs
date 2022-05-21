@@ -10,7 +10,11 @@ namespace Zamin.EndPoints.Web.StartupExtentions
         {
 
             var assemblies = GetAssemblies(assemblyNamesForSearch);
-            services.AddApplicationServices(assemblies).AddDataAccess(assemblies).AddZaminServices(assemblies).AddCustomeDepenecies(assemblies);
+            services.AddApplicationServices(assemblies)
+                .AddDataAccess(assemblies)
+                .AddZaminServices(assemblies)
+                .AddCustomeDepenecies(assemblies);
+
             return services;
         }
         public static IServiceCollection AddCustomeDepenecies(this IServiceCollection services, IEnumerable<Assembly> assemblies)

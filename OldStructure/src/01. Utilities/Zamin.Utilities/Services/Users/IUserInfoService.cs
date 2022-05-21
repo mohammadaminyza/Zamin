@@ -3,7 +3,7 @@ public interface IUserInfoService
 {
     string GetUserAgent();
     string GetUserIp();
-    int UserId();
+    string UserId();
 
     string GetFirstName();
     string GetLastName();
