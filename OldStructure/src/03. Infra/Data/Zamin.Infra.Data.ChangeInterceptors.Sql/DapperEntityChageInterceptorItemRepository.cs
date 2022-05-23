@@ -3,19 +3,23 @@ using Zamin.Infra.Data.ChangeInterceptors.EntityChageInterceptorItems;
 using Zamin.Utilities.Configurations;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 
 namespace Zamin.Infra.Data.ChangeInterceptors.Sql;
 public class DapperEntityChageInterceptorItemRepository : IEntityChageInterceptorItemRepository
 {
     private readonly ZaminConfigurationOptions _configuration;
     private readonly IDbConnection _dbConnection;
+    private readonly ILogger _logger;
     private string InsertEntityChageInterceptorItemCommand = "INSERT INTO [{0}].[{1}]([Id],[ContextName],[EntityType],[EntityId],[UserId],[IP],[TransactionId],[DateOfOccurrence],[ChangeType]) VALUES (@Id,@ContextName,@EntityType,@EntityId,@UserId,@IP,@TransactionId,@DateOfOccurrence,@ChangeType) ";
     private string InsertPropertyChangeLogItemCommand = "INSERT INTO [{0}].[{1}]([Id],[ChageInterceptorItemId],[PropertyName],[Value]) VALUES (@Id,@ChageInterceptorItemId,@PropertyName,@Value)";
 
-    public DapperEntityChageInterceptorItemRepository(ZaminConfigurationOptions configuration)
+    public DapperEntityChageInterceptorItemRepository(ZaminConfigurationOptions configuration, ILogger logger)
     {
         _configuration = configuration;
         _dbConnection = new SqlConnection(configuration.EntityChangeInterception.DapperEntityChageInterceptorItemRepository.ConnectionString);
+        _logger = logger;
+
         if (configuration.EntityChangeInterception.DapperEntityChageInterceptorItemRepository.AutoCreateSqlTable)
         {
             CreateEntityChageInterceptorItemTableIfNeeded();
@@ -31,27 +35,43 @@ public class DapperEntityChageInterceptorItemRepository : IEntityChageIntercepto
     {
         foreach (var item in entityChageInterceptorItems)
         {
-            //if (_dbConnection.State == ConnectionState.Closed)
-            //    _dbConnection.Open();
-            //using var tran = _dbConnection.BeginTransaction();
+            if (_dbConnection.State == ConnectionState.Closed)
+                _dbConnection.Open();
+            using var tran = _dbConnection.BeginTransaction();
             try
             {
                 _dbConnection.Execute(InsertEntityChageInterceptorItemCommand, new { item.Id, item.ContextName, item.EntityType, item.EntityId, item.UserId, item.Ip, item.TransactionId, item.DateOfOccurrence, item.ChangeType });
                 _dbConnection.Execute(InsertPropertyChangeLogItemCommand, item.PropertyChangeLogItems.ToArray());
-                // tran.Commit();
+                tran.Commit();
             }
             catch (Exception ex)
             {
-
-                // tran.Rollback();
+                _logger.LogError($"Badness - Entity Change Dapper Repository + {ex.Message}");
+                tran.Rollback();
             }
         }
 
     }
 
-    public Task SaveAsync(List<EntityChageInterceptorItem> entityChageInterceptorItems)
+    public async Task SaveAsync(List<EntityChageInterceptorItem> entityChageInterceptorItems)
     {
-        throw new NotImplementedException();
+        foreach (var item in entityChageInterceptorItems)
+        {
+            if (_dbConnection.State == ConnectionState.Closed)
+                _dbConnection.Open();
+            using var tran = _dbConnection.BeginTransaction();
+            try
+            {
+                await _dbConnection.ExecuteAsync(InsertEntityChageInterceptorItemCommand, new { item.Id, item.ContextName, item.EntityType, item.EntityId, item.UserId, item.Ip, item.TransactionId, item.DateOfOccurrence, item.ChangeType });
+                await _dbConnection.ExecuteAsync(InsertPropertyChangeLogItemCommand, item.PropertyChangeLogItems.ToArray());
+                tran.Commit();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Badness - Entity Change Dapper Repository + {ex.Message}");
+                tran.Rollback();
+            }
+        }
     }
 
 
