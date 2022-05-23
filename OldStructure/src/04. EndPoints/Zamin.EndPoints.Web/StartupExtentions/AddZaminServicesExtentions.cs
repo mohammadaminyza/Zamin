@@ -147,7 +147,7 @@ namespace Zamin.EndPoints.Web.StartupExtentions
             services.Scan(s => s.FromAssemblies(assembliesForSearch)
                 .AddClasses(classes => classes.Where(type => type.Name == _zaminConfigurations.UserInfoServiceTypeName && typeof(IUserInfoService).IsAssignableFrom(type)))
                 .AsImplementedInterfaces()
-                .WithScopedLifetime());
+                .WithSingletonLifetime());
 
             return services;
         }
