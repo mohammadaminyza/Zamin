@@ -1,16 +1,17 @@
 ﻿using Zamin.Core.Domain.Entities;
 using Zamin.Utilities.Services.Users;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Zamin.Core.Domain.Events;
 
 namespace Zamin.Infra.Data.Sql.Extensions;
 public static class AuditableShadowProperties
 {
-    public static readonly Func<object, int?> EFPropertyCreatedByUserId =
-                                    entity => EF.Property<int?>(entity, CreatedByUserId);
+    public static readonly Func<object, string?> EFPropertyCreatedByUserId =
+                                    entity => EF.Property<string?>(entity, CreatedByUserId);
     public static readonly string CreatedByUserId = nameof(CreatedByUserId);
 
-    public static readonly Func<object, int?> EFPropertyModifiedByUserId =
-                                    entity => EF.Property<int?>(entity, ModifiedByUserId);
+    public static readonly Func<object, string?> EFPropertyModifiedByUserId =
+                                    entity => EF.Property<string?>(entity, ModifiedByUserId);
     public static readonly string ModifiedByUserId = nameof(ModifiedByUserId);
 
     public static readonly Func<object, DateTime?> EFPropertyCreatedDateTime =
@@ -28,9 +29,9 @@ public static class AuditableShadowProperties
                                                .Where(e => typeof(IAuditable).IsAssignableFrom(e.ClrType)))
         {
             modelBuilder.Entity(entityType.ClrType)
-                        .Property<int?>(CreatedByUserId);
+                        .Property<string?>(CreatedByUserId);
             modelBuilder.Entity(entityType.ClrType)
-                        .Property<int?>(ModifiedByUserId);
+                        .Property<string?>(ModifiedByUserId);
             modelBuilder.Entity(entityType.ClrType)
                         .Property<DateTime?>(CreatedDateTime);
             modelBuilder.Entity(entityType.ClrType)
@@ -43,10 +44,10 @@ public static class AuditableShadowProperties
         IUserInfoService userInfoService)
     {
 
-        var userAgent = userInfoService.GetUserAgent();
-        var userIp = userInfoService.GetUserIp();
+        var userAgent = userInfoService.GetUserAgent() ?? EventUserInfo.UserAgent;
+        var userIp = userInfoService.GetUserIp() ?? EventUserInfo.UserIp;
         var now = DateTime.UtcNow;
-        var userId = userInfoService.UserId();
+        var userId = userInfoService.UserId() ?? EventUserInfo.UserId;
 
         var modifiedEntries = changeTracker.Entries<IAuditable>()
                                            .Where(x => x.State == EntityState.Modified);

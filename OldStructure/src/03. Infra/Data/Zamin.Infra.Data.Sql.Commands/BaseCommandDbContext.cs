@@ -11,6 +11,7 @@ using Zamin.Utilities.Configurations;
 using Zamin.Core.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zamin.Infra.Data.Sql.Extensions;
+using Zamin.Core.Domain.Events;
 
 namespace Zamin.Infra.Data.Sql.Commands;
 public abstract class BaseCommandDbContext : DbContext
@@ -122,7 +123,9 @@ public abstract class BaseCommandDbContext : DbContext
                 OutBoxEventItems.Add(new OutBoxEventItem
                 {
                     EventId = Guid.NewGuid(),
-                    AccuredByUserId = userInfoService.UserId().ToString(),
+                    AccuredByUserId = userInfoService.UserId().ToString() ?? EventUserInfo.UserId,
+                    AccuredByUserIp = userInfoService.GetUserIp().ToString() ?? EventUserInfo.UserIp,
+                    AccuredByUserAgent = userInfoService.GetUserAgent().ToString() ?? EventUserInfo.UserAgent,
                     AccuredOn = DateTime.Now,
                     AggregateId = aggregate.BusinessId.ToString(),
                     AggregateName = aggregate.GetType().Name,

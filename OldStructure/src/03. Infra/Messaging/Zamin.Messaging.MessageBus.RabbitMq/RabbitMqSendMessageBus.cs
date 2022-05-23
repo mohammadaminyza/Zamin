@@ -81,7 +81,6 @@ public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjec
         basicProperties.AppId = _configuration.ServiceId;
         basicProperties.CorrelationId = parcel?.CorrelationId;
         basicProperties.MessageId = parcel?.MessageId;
-        basicProperties.UserId = _userInfoService.UserId();
         basicProperties.Headers = parcel?.Headers;
         basicProperties.Type = parcel?.MessageName;
         channel.BasicPublish(_configuration.MessageBus.RabbitMq.ExchangeName, parcel?.Route, basicProperties, parcel?.MessageBody.ToByteArray());

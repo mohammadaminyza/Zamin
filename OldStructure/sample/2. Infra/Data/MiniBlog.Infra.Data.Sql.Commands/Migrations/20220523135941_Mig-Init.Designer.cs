@@ -12,7 +12,7 @@ using MiniBlog.Infra.Data.Sql.Commands.Common;
 namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
 {
     [DbContext(typeof(MiniblogCommandDbContext))]
-    [Migration("20220521134904_Mig-Init")]
+    [Migration("20220523135941_Mig-Init")]
     partial class MigInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,8 +36,8 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
                         .IsUnicode(true)
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -46,8 +46,8 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ModifiedByUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
@@ -71,10 +71,16 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OutBoxEventItemId"), 1L, 1);
 
+                    b.Property<string>("AccuredByUserAgent")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AccuredByUserId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("AccuredByUserIp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("AccuredOn")
                         .HasColumnType("datetime2");

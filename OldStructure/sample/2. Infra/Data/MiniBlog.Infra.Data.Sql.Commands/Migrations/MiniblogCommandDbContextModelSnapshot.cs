@@ -34,8 +34,8 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
                         .IsUnicode(true)
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -44,8 +44,8 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ModifiedByUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
@@ -69,10 +69,16 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OutBoxEventItemId"), 1L, 1);
 
+                    b.Property<string>("AccuredByUserAgent")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AccuredByUserId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("AccuredByUserIp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("AccuredOn")
                         .HasColumnType("datetime2");

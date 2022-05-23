@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Text;
+using Zamin.Core.Domain.Events;
 
 namespace Zamin.Messaging.MessageBus.RabbitMq;
 public class RabbitMqReceiveMessageBus : IReceiveMessageBus, IDisposable
@@ -61,7 +63,11 @@ public class RabbitMqReceiveMessageBus : IReceiveMessageBus, IDisposable
             try
             {
                 var consumer = scope.ServiceProvider.GetRequiredService<IMessageConsumer>();
-                consumer.ConsumeEvent(e.BasicProperties.AppId, e.ToParcel());
+                var eventParcel = e.ToParcel();
+
+                SetUserInfo(eventParcel.Headers);
+
+                consumer.ConsumeEvent(e.BasicProperties.AppId, eventParcel);
             }
             catch (Exception ex)
             {
@@ -93,5 +99,14 @@ public class RabbitMqReceiveMessageBus : IReceiveMessageBus, IDisposable
         _channel.Close();
         _connection.Close();
     }
+
+
+    private void SetUserInfo(Dictionary<string, object> header)
+    {
+        EventUserInfo.UserId = header.GetAccuredByUserId();
+        EventUserInfo.UserIp = header.GetAccuredByUserIp();
+        EventUserInfo.UserAgent = header.GetAccuredByUserAgent();
+    }
+
 }
 

@@ -1,6 +1,7 @@
 ﻿using Zamin.Utilities.Services.MessageBus;
 using System.Text;
 using RabbitMQ.Client.Events;
+using Zamin.Utilities.Extensions;
 
 namespace Zamin.Messaging.MessageBus.RabbitMq;
 static class RabbitExtentsions
@@ -17,5 +18,23 @@ static class RabbitExtentsions
             Headers = basicDeliverEventArgs?.BasicProperties?.Headers != null ? (Dictionary<string, object>)basicDeliverEventArgs?.BasicProperties?.Headers : null
         };
         return parcel;
+    }
+
+    public static string? GetAccuredByUserId(this Dictionary<string, object> value)
+    {
+        var userIdByte = (byte[]?)value.FirstOrDefault(e => e.Key == "AccuredByUserId").Value;
+        return userIdByte.ByteArrayToString();
+    }
+
+    public static string? GetAccuredByUserIp(this Dictionary<string, object> value)
+    {
+        var userIdByte = (byte[]?)value.FirstOrDefault(e => e.Key == "AccuredByUserIp").Value;
+        return userIdByte.ByteArrayToString();
+    }
+
+    public static string? GetAccuredByUserAgent(this Dictionary<string, object> value)
+    {
+        var userIdByte = (byte[]?)value.FirstOrDefault(e => e.Key == "AccuredByUserAgent").Value;
+        return userIdByte.ByteArrayToString();
     }
 }
