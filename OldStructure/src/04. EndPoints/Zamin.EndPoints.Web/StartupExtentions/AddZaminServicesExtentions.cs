@@ -201,7 +201,7 @@ namespace Zamin.EndPoints.Web.StartupExtentions
                 services.Scan(s => s.FromAssemblies(assembliesForSearch)
                     .AddClasses(classes => classes.Where(type => type.Name == _zaminConfigurations.PoolingPublisher.OutBoxRepositoryTypeName && typeof(IOutBoxEventItemRepository).IsAssignableFrom(type)))
                     .AsImplementedInterfaces()
-                    .WithSingletonLifetime());
+                    .WithTransientLifetime());
                 services.AddHostedService<PoolingPublisherHostedService>();
 
             }

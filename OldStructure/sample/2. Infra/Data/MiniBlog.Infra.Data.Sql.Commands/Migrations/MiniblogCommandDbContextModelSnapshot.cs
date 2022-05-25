@@ -61,6 +61,41 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
                     b.ToTable("Blogs");
                 });
 
+            modelBuilder.Entity("MiniBlog.Core.Domain.EventTests.EventTest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<Guid>("BusinessId")
+                        .IsUnicode(true)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("BusinessId");
+
+                    b.ToTable("EventTests");
+                });
+
             modelBuilder.Entity("Zamin.Infra.Events.Outbox.OutBoxEventItem", b =>
                 {
                     b.Property<long>("OutBoxEventItemId")

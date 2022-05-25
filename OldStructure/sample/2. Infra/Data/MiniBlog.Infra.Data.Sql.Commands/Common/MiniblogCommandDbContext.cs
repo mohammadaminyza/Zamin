@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MiniBlog.Core.Domain.Blogs.Entities;
+using MiniBlog.Core.Domain.EventTests;
 using Zamin.Core.Domain.Toolkits.ValueObjects;
 using Zamin.Infra.Data.Sql.Commands;
 
@@ -12,7 +13,7 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Common
         }
 
         public DbSet<Blog> Blogs => Set<Blog>();
-
+        public DbSet<EventTest> EventTests => Set<EventTest>();
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {

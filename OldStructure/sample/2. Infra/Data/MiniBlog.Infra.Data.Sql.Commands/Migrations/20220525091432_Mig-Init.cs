@@ -30,6 +30,25 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EventTests",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    BusinessId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventTests", x => x.Id);
+                    table.UniqueConstraint("AK_EventTests_BusinessId", x => x.BusinessId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OutBoxEventItems",
                 columns: table => new
                 {
@@ -58,6 +77,9 @@ namespace MiniBlog.Infra.Data.Sql.Commands.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Blogs");
+
+            migrationBuilder.DropTable(
+                name: "EventTests");
 
             migrationBuilder.DropTable(
                 name: "OutBoxEventItems");
