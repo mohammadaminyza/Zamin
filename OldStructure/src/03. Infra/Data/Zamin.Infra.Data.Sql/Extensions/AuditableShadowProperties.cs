@@ -44,10 +44,10 @@ public static class AuditableShadowProperties
         IUserInfoService userInfoService)
     {
 
-        var userAgent = userInfoService.GetUserAgent() ?? EventUserInfo.UserAgent;
-        var userIp = userInfoService.GetUserIp() ?? EventUserInfo.UserIp;
+        var userAgent = userInfoService.GetUserAgent();
+        var userIp = userInfoService.GetUserIp();
         var now = DateTime.UtcNow;
-        var userId = userInfoService.UserId() ?? EventUserInfo.UserId;
+        var userId = userInfoService.UserId();
 
         var modifiedEntries = changeTracker.Entries<IAuditable>()
                                            .Where(x => x.State == EntityState.Modified);
