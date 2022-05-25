@@ -1,10 +1,9 @@
-﻿using Zamin.Utilities.Configurations;
+﻿using Microsoft.Extensions.ObjectPool;
+using RabbitMQ.Client;
+using Zamin.Utilities.Configurations;
+using Zamin.Utilities.Extensions;
 using Zamin.Utilities.Services.MessageBus;
 using Zamin.Utilities.Services.Serializers;
-using RabbitMQ.Client;
-using Microsoft.Extensions.ObjectPool;
-using Zamin.Utilities.Extensions;
-using Zamin.Utilities.Services.Users;
 
 namespace Zamin.Messaging.MessageBus.RabbitMq;
 public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjectPolicy<IModel>
@@ -12,14 +11,12 @@ public class RabbitMqSendMessageBus : IDisposable, ISendMessageBus, IPooledObjec
     private readonly ZaminConfigurationOptions _configuration;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly IConnection _connection;
-    private readonly IUserInfoService _userInfoService;
+
     public RabbitMqSendMessageBus(ZaminConfigurationOptions configuration,
-        IJsonSerializer jsonSerializer,
-        IUserInfoService userInfoService)
+        IJsonSerializer jsonSerializer)
     {
         _configuration = configuration;
         _jsonSerializer = jsonSerializer;
-        _userInfoService = userInfoService;
 
         var connectionFactory = new ConnectionFactory
         {
